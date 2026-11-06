@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>My LinkedIn Bookmarks</title>
+  <style>
+    body { font: 14px/1.5 -apple-system, system-ui, sans-serif; background: #f3f2ef; color: #1d2226; margin: 0; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 24px; }
+    h1 { font-size: 22px; margin: 0 0 16px; }
+    input { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font: inherit; margin-bottom: 16px; }
+    .item { background: #fff; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+    .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    a { color: #0a66c2; font-weight: 600; text-decoration: none; font-size: 16px; }
+    a:hover { text-decoration: underline; }
+    .date { color: #666; font-size: 12px; white-space: nowrap; }
+    .reason { white-space: pre-wrap; word-break: break-word; margin: 6px 0; }
+    button { border: 1px solid #c0392b; color: #c0392b; background: #fff; border-radius: 14px; padding: 2px 10px; cursor: pointer; font-size: 12px; }
+    .empty { color: #666; text-align: center; padding: 40px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>📌 People I've marked <span id="count"></span></h1>
+    <input id="q" placeholder="Search by name or reason…" autofocus>
+    <div id="list"></div>
+  </div>
+  <script src="bookmarks.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "LinkedIn Reason Bookmarks",
+  "version": "1.0.0",
+  "description": "Remember why you sent someone a connection request. Notes show up on their profile.",
+  "permissions": ["storage"],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_title": "Open my LinkedIn bookmarks" },
+  "content_scripts": [
+    {
+      "matches": ["https://www.linkedin.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
