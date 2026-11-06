@@ -2,11 +2,14 @@
 // Storage shape: { bookmarks: { [slug]: { slug, name, url, reason, createdAt, updatedAt } } }
 
 let currentSlug = null;
+let currentMode = null;
 let host = null;
 
 function getSlug() {
   const m = location.pathname.match(/^\/in\/([^/]+)/);
-  return m ? decodeURIComponent(m[1]) : null;
+  if (!m) return null;
+  // LinkedIn profile URLs are case-insensitive (/in/Jane-Doe == /in/jane-doe).
+  try { return decodeURIComponent(m[1]).toLowerCase(); } catch { return m[1].toLowerCase(); }
 }
 
 function getName() {
@@ -86,6 +89,7 @@ async function render(mode) {
   }
   const root = host.shadowRoot;
   mode = mode || (bm ? "view" : "collapsed");
+  currentMode = mode;
 
   let html = `<style>${STYLE}</style><div class="box">`;
   if (mode === "collapsed") {
@@ -129,16 +133,24 @@ async function render(mode) {
 
 // LinkedIn is a single-page app, so watch for URL changes instead of relying on page loads.
 function check() {
+  // After the extension is reloaded or updated, this old script can no longer
+  // reach chrome.storage. Stop quietly instead of throwing errors every tick.
+  if (!chrome.runtime?.id) {
+    clearInterval(timer);
+    removePanel();
+    return;
+  }
   const slug = getSlug();
   if (slug === currentSlug) return;
   currentSlug = slug;
   slug ? render() : removePanel();
 }
 
-setInterval(check, 800);
+const timer = setInterval(check, 800);
 check();
 
-// Keep the panel in sync if the note is edited or deleted from the bookmarks page.
+// Keep the panel in sync if the note is edited or deleted from the bookmarks page,
+// but don't throw away text the user is in the middle of typing.
 chrome.storage.onChanged.addListener((changes) => {
-  if (changes.bookmarks && currentSlug) render();
+  if (changes.bookmarks && currentSlug && currentMode !== "edit") render();
 });
